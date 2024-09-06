@@ -15,63 +15,34 @@ interface IHistorical {
 interface ChartProps {
   coinId: string;
 }
+
+interface mapdata {
+  x: number;
+  y: number;
+}
+
 function Chart({ coinId }: ChartProps) {
   const { isLoading, data } = useQuery<IHistorical[]>({
     queryKey: ["ohlcv", coinId],
     queryFn: () => fetchCoinHistory(coinId),
     refetchInterval: 10000,
   });
+
+  const mappData: mapdata[] =
+    data?.map((d) => ({
+      x: d.close,
+      y: d.low,
+    })) ?? [];
+
   return (
     <div>
       {isLoading ? (
         "Loading chart..."
       ) : (
         <ApexChart
-          type="line"
-          series={[
-            {
-              name: "Price",
-              data: data?.map((price) => price.close) ?? [],
-            },
-          ]}
-          options={{
-            theme: {
-              mode: "dark",
-            },
-            chart: {
-              height: 300,
-              width: 500,
-              toolbar: {
-                show: false,
-              },
-              background: "transparent",
-            },
-            grid: { show: false },
-            stroke: {
-              curve: "smooth",
-              width: 4,
-            },
-            yaxis: {
-              show: false,
-            },
-            xaxis: {
-              axisBorder: { show: false },
-              axisTicks: { show: false },
-              labels: { show: false },
-              type: "datetime",
-              categories: data?.map((price) => price.time_close),
-            },
-            fill: {
-              type: "gradient",
-              gradient: { gradientToColors: ["#0be881"], stops: [0, 100] },
-            },
-            colors: ["#0fbcf9"],
-            tooltip: {
-              y: {
-                formatter: (value) => `$${value.toFixed(2)}`,
-              },
-            },
-          }}
+          type="candlestick"
+          series={[{ data: mappData }]}
+          options={{ chart: { type: "candlestick", height: 350 } }}
         />
       )}
     </div>
