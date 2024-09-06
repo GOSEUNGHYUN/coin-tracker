@@ -32,7 +32,7 @@ const Coin = styled.li`
   }
   &:hover {
     a {
-      color: ${(props) => props.theme.accentColor};
+      color: ${(props) => props.theme.textColor};
     }
   }
 `;
@@ -63,7 +63,11 @@ interface ICoin {
   type: string;
 }
 
-function Coins() {
+interface Itoggle {
+  toggleFn: () => void;
+}
+
+function Coins({ toggleFn }: Itoggle) {
   const { isLoading, data } = useQuery<ICoin[]>({
     queryKey: ["key"],
     queryFn: fetchCoins,
@@ -72,6 +76,7 @@ function Coins() {
     <Container>
       <Header>
         <Title>코인</Title>
+        <button onClick={toggleFn}>mode</button>
       </Header>
       {isLoading ? (
         <Loader>Loading...</Loader>

@@ -2,7 +2,11 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Coin from "./routes/Coin";
 import Coins from "./routes/Coins";
 
-function Router() {
+interface Itoggle {
+  toggleFn: () => void;
+}
+
+function Router({ toggleFn }: Itoggle) {
   return (
     <BrowserRouter>
       <Switch>
@@ -10,7 +14,7 @@ function Router() {
           <Coin />
         </Route>
         <Route path="/">
-          <Coins />
+          <Coins toggleFn={toggleFn} />
         </Route>
       </Switch>
     </BrowserRouter>
